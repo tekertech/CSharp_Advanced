@@ -1,71 +1,120 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Configuration;
+using System.Data.SqlClient;
 
 namespace CSharp
 {
     class Program
     {
-        class Personel
-        {
-            public int ID { get; set; }
-        }
         static void Main(string[] args)
         {
-            #region ?(Nullable), ??(Null-Coalescing) , ??=(Nullable Coalescing Assigment), Default, is, is null, is not null, as
+            #region C# Pattern Matching
+            #region Type Pattern
             /*
-             * Not:                    : (int)*(double) = double, (byte)*(int) = int, byte * byte = int (istisna) :)
-             * Default                 : Sayisal : 0, bool : false, string : null, char : \0, referans : null
-             * is                      : Boxing'e tabi tutulmuş bir değerin öz türünü öğrenebilmek , kontrol etmek için kullanılan bir operatördür.
-             *                           OOP yapılanmasında polimorfizm is operatörü ile kalıtımsal durumlardaki nesnelerin türlerinide öğrenebiliriz.
-             * is null                 : nullable olan türleri kontrol etmek için kullanılır. (Referans türlü değişkenler.)    
-             * as                      : Cast operatörünün UnBoxing işlemine alternatif olarak üretilmiş bir operatördür.
-             *                           Türüne uygun bir şekilde as edilmesi zorunlu değildir. Eğer ki tür uygunsa unboxing islemi başarılı yapılacaktır, değilse null değer döndürecektir.
-             *                           Cast operatörü ile yapacak olsaydık türüne uygun olmayanlar için hata verecek olurdu. Örn;  object x = 123; (string)x hata verirdi.
-             *                           nullable olanlar ile çalışmaktadır geriye null dönderdiği için. Değer türlü değişkenler null alamaz çünkü.
-             *?(Nullable)              : C# prog. dilinde değer tür. değişkenler normal şartlarda null değer alamazlar (not nullable). ? ile nullable yapılabilir. int? x;         
-             *??(Nullable Coalescing)  : Elimizdeki değişkenin değerinin null olma durumuna istinaden farklı bir değeri göndermemizi sağlayan operatördür.
-             *C#(8.0)                    Sol ve sağdaki değerler aynı türde olmalıdır.  string a=null;    a ?? "Mehmet"
-             *                         
-             *??=(Nullable Coalescing) :  null olan değişkenlerin değerine atama yapar ek olarak               
-             *     Assigment
-             *     
-             *Ternary                  :Birden fazla Condition Uygulamak.  
-             *                          string sonuc =  yas < 25 ? "A" : (yas == 25 ? "B" : "C")    
+             * C# 7.0 ile gelmiş 9.0 ile daha güçlenmiştir.
+             * Object içerisindeki bir tipin belirlenmesinde kullanılan is operatörünün desenleştirilmiş halidir.
+             * is ile belirlenen türün direkt dönüşümünü sağlar. As ve Cast işlemine gerek kalmaz.
+             * Kritik : Scope olarak if in içerisinde bulunduğu scope içeriisnde ilgili değişken kullanılabilir. Fakat Use of unassigned local variable 'a'   dikkat edilmeli.
              */
-            int a = default;
-            int sayi = default(int); 
-            string name = default; // null
-            bool flag = default;
-            char cinsiyet = default;
-            Personel personel = new Personel();
-            object o = personel;
-            int? yas = null;
 
-            Console.WriteLine("Sayi : " + sayi + " Flag :" +flag + " Cinsiyet :" + cinsiyet + " Personel :" + personel);
-            Console.WriteLine("o :" + (o is Personel));
+            object name = "Mehmet";
 
-            object bulut = 123;
+            if (name is string a) // a ile dönüştürüp geri döndürür.
+            {
+                // string a_ = name as string;  bunu yazmaya gerek yok
+                Console.WriteLine("Name : " + a.ToString());
+            }
+            else if (name is int b) 
+            {
+                int xx = (int)name; //  gerek kalmayacak
+            }
 
-            Console.WriteLine(bulut as string);
-            //Console.WriteLine((string)bulut);  // Unable to cast object of type 'System.Int32' to type 'System.String'.'
+            //Console.WriteLine("Scope Dışı : " + a);  // Use of unassigned local variable 'a'   !!!!!!!!!!  KRİTİK 
+            #endregion
+            #region Constant Pattern
+            /*
+             * == operatörünün işlemini gerçekleştirir
+             * is operatörü bir değğişkenin türünü sormamızı/belirlemizi saağlayan bir operatördür ve bu operatörün kullanıldığı değişkenlerin türü illa bir referans türlü olma zorunluluğu yoktur.
+             * İsterseniz değer türlü değişkenleri de is operatörü ile kullanılabilir hatta primitive türlerde bile kullanılabilmektedir.
+             */
+            object number = 45;
+            if (number is 45) { 
+                Console.WriteLine("Değer Kontrolu : " + number);
+            }
+            if (number is int) { // Normal is operatörün işlemi kullanılmıştır.
+                Console.WriteLine("INT");
+            }
 
-            string surname = null;
-            Console.WriteLine(surname ?? "Null"); //   
-            Console.WriteLine(surname == null ? "Null" : surname);
-            Console.WriteLine(surname ??= "TEKER");
-            Console.WriteLine(surname);
+            int salary = 5; // is operatörün işlemidir aşağıdaki işlemler Constant ın değil. Kritik
+            Console.WriteLine(salary is int); // primitive
+            Console.WriteLine(salary is string); // referans
+            Console.WriteLine(salary is bool); // değer
 
-            string life = null;
-            Console.WriteLine(life ??= "Aile");
 
-            //  Ternary
-            int number = 8;
-            int result = number < 3 ? number * 5 : (number > 3 && number < 9 ? number * 3 : (number >= 9 && number % 2 == 0 ? number * 10 : ( number % 2 == 1 ? number : -9)));
-            Console.WriteLine(result);
+
+            #endregion
+            #region Var Pattern   
+            /*
+             * Eldeki veriyi 'var' değişkeni ile elde etmememizi sağlar
+             * Var : verilen değerin türüne bürünen bir keyword... runtime'da bürünme işlemini gerçekleştirmektedir.
+             * Kritik : Normalde var derleme anında türüne bürünür ama Var Pattern deki var runtime da türüne bürünür dynamic gibi.
+             */
+            object surname = "Teker";  //
+            var ogrenci = true;
+            dynamic mudur = 12; //  runtime da türünü belirtir.
+
+            if(surname is var newType)
+            {
+                Console.WriteLine(newType.GetType());
+            }
+            #endregion
+            #region Recursive Pattern
+            /*
+             * Bu desen switch-case yapılanması üzerinde birçok yenilik getirmektedir.
+             * Switch bloğunda referans türlü değişkenlerde kontrol edilebilmektedir. Recursive Pattern ile geldi !1!!!!!!
+             * Ayrıca switch bloğunda when komutu ile çeşitli şat/koşul niteliği kazandırılmıştır. Recursive Pattern ile geldi !!!!!!!!!
+             * Tür kontrolu yapıldığı için Typoe Pattern kapsamaktadır.
+             * case null komutu ile ilgili türün/referansın null olup olmamasını kontrol edebilmesinden dolayı Constant Pattern ı da kapsamaktadır.
+             */
+            SqlConnection sqlConnection = new SqlConnection("");
+            var connecton =  CompareToConnection(sqlConnection);
+            SqlConnection sqlConnectionNull = null;
+            dynamic connectonDynamic = CompareToConnection(sqlConnectionNull);
+
+            #endregion
+            #region Type vs Var Pattern Kritik
+            object o = "Vanadokya";
+
+            bool result = o is string city;        
+            //Console.WriteLine("Şehir : " + city); //  Type Pattern da Use of unassigned local variable 'a'   hatası alır.
+            result = o is var city1;
+            Console.WriteLine("Şehir :" + city1);  // Var Pattern de hata almaz run-time da ne tür gelirse ona bürünür.
             #endregion
 
+            #region MyRegion
+
+            #endregion
+            #endregion
 
             Console.ReadLine();
+        }
+
+        static ICloneable CompareToConnection(ICloneable cloneable) 
+        {
+            switch (cloneable)
+            {
+                case SqlConnection sqlConnection:
+                    sqlConnection.ConnectionString = "Server=(localdb)\v11.0;Integrated Security=true";
+                    return sqlConnection;
+                case SqlCommand sqlCommand when sqlCommand.Connection.ConnectionString != null:
+                     sqlCommand.CommandText = "Select * From Table";
+                    return sqlCommand;
+                case null:
+                    return cloneable;
+                default:
+                    return cloneable;
+            }
         }
     }
  

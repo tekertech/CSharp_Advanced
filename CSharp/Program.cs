@@ -10,63 +10,98 @@ namespace CSharp
     {
         static void Main(string[] args)
         {
-            #region RAM(STACK/HEAP);  Value Type(IsValueType) - Primitive Type (IsPrimitive), Literal Düzenleme(Alt tire (_) C# 7.0), Default Literal C# 7.1
+            #region Manevratik Komutlar: Break, Continue, Return
             /*
-             * C# programlama dilinde RAM de veri tutabilmek depolayabilmek için tanımlanacak olan değişkenin türü/veri türü bildirilmelidir.
-             * Bir değişkenle RAM'de alan tahsisinde bulunulduğunda buna Deger türlü değişken diyoruz. Yani tuttuğu deger bir normal deger olan değişkenlere deger türlü denmektedir.
-             * Değer Türlü değişkenler sade ve sadece br değeri tutan değişkenlerdir. Yani adınız soyadınız yaşınız gibi.
-             * Primitive Type : En ilkel türdür; byte bir primitive türdür fakat decimal primitive değildir çünkü byte lardan meydana gelmiştir. ikiside value type dir.
-             * Value Type , Primitive Type leri kapsar.
-             * Değişken tanımlarken RAM'de tutulacak veriye uygun bir alan tahsisinde bulunabilmek için ilgili değişkenin turunden hareket edilir.
-             * RAM de bir türden tanımlanmış alana farklı bir türde deger atayamayız.
-             * 
-             * * ***********************************************************************************************************************TIP*********************
-             * *Tür*******Açıklama ve Bellek Alanı***************Max-Min aralığı                                                                               *
-             * *************************************************************************************************************************TIP*********************
-             * MANTIKSAL  * bool     *  Doğru veya yanlış (1 Bit)      *        0-1 (True- False)                                                 * MANTIKSAL  *
-             * METINSEL   * char     *  Karakterler(16 Bit)            *        16 Bit Unicode                                                    * METINSEL   *
-             * SAYISAL    * sbyte    *  İşaretli Tam Sayı(8 Bit)       *       -128 ile 127 arası                                                 * SAYISAL    *
-             * SAYISAL    * byte     *  İşaretsiz Tam Sayı(8 Bit)      *        0 ile 255 arası                                                   * SAYISAL    *
-             * SAYISAL    * short    *  İşaretli Tam Sayı(16 Bit)      *        -32.768 ile 32.767                                                * SAYISAL    *
-             * SAYISAL    * ushort   *  İşaretsiz Tam Sayı(16 Bit)     *        0 ile 65.535                                                      * SAYISAL    *
-             * SAYISAL    * int      *  İşaretli Tam Sayı(32 Bit)      *        -2.147.483.468 ile 2.147.483.647 arası                            * SAYISAL    *
-             * SAYISAL    * uint     *  İşaretsiz Tam Sayı(32 Bit)     *        0 ile 4.294.967.295 arası                                         * SAYISAL    *
-             * SAYISAL    * long     *  İşaretli Tam Sayı(64 Bit)      *        -9.223.372.036.854.775.808 ile 9.223.372.036.854.775.808 arası    * SAYISAL    *
-             * SAYISAL    * ulong    *  İşaretsiz Tam Sayı(64 Bit)     *         0 ile 18.446.744.073.709.551.615 arası                           * SAYISAL    *
-             * ONDALIK    * float    *  Tek kayan Sayı(32 Bit)         *                                                                          * ONDALIK    *
-             * ONDALIK    * double   *  Çift Kayan Sayı (64 Bit)       *                                                                          * ONDALIK    *
-             * ONDALIK    * decimal  *  Ondalık Sayı(128 Bit)          *                                                                          * ONDALIK    *
-             * ***************************************************************************************************************************TIP*******************
-             *  Değişkenler RAM ın STACK bölgesinde tutulur. 
-             *  Kompleks sayısal ifadeleri _ (Alt tire) ile düzenlememizi sağlayan özelliktir. 10000000000 ->   10_000_000_000
-             *  Default Literal :  default keyword ü ile türün varsayılan değerini geri döndürür.
-             *                  string : null           bool : false
-             *                  sayisal: 0              char : ''
-             *                  Double : 0              byte : 0
-             *  Main içerisinde oluşturulan değişkenlerin ilk değerlerini manuel atmaya özen gösteriniz. Class larda default verilir otomatik olarak.
-             *  Default Literal C# 7.1 int x = default;
+             * Break    Komutu: 2 yerde kullanılır. Switch Case ve Döngüler'de
+             * Continue Komutu: Sade ve sadece döngülerden erişilebilen ve döngülerde kullanılabilen bir keyworddur.    
+             *                  Döngüde bir sonraki tura geçmemizi sağlar.
+             * Return   Komutu: Her yerde(metot içerisinde) kullanılabilir, erişilebilir bir keyword dur.
+             *                  2 işlemi gerçekleştirir. Metottan çıkma ve değer döndürme.
+             * Goto     Komutu: Kodun senkranizasyonunu bozup, askisi ters istikamette almamızı sağlayan bir manevratik komuttur.
+             *                  switch case yapılanmasında dahili olarak kullanılan bu komut, metot içeriisinde heryerde kullanılabilir.
              */
             #endregion
-            Console.WriteLine("IsPrimitive : " + typeof(decimal).IsPrimitive + " IsValueType : " + typeof(decimal).IsValueType);
-            Console.WriteLine("IsPrimitive :" + typeof(byte).IsPrimitive + " IsValueType : " + typeof(byte).IsValueType);
-            Console.WriteLine("IsPrimitive :" + typeof(string).IsPrimitive + " IsValueType : " + typeof(string).IsValueType);
+            int a = 0;
 
-            //  Değişkenler RAM ın STACK bölgesinde tutulur. Run-Time'da alan tahsisinde bulunur.
-            int yas;
-            string name;
+            switch (10)
+            {
+                case 2:
+                    Console.WriteLine("2");
+                    break;
+                case 10:
+                    Console.WriteLine("10 değeri mevcut.");
 
-            // Literal Düzenleme (C# 7.0)
-            int number = 1_000_000;
+                    break;
+                default:
+                    Console.WriteLine("Default");
+                    break;
+            }
 
-            Console.WriteLine("Number : " + number);
-            Console.WriteLine(default(bool) + " " + default(char) + " " + default(byte));
-            Console.WriteLine(default(short) + " " + default(int) + " " + default(long));
-            Console.WriteLine(default(float) + " " + default(double) + " "+ default(decimal));
-            Console.WriteLine(default(string) + " " + default(object));
+            int sayac = 0;
+            while (true)
+            {
+                if (sayac == 100) break;
+                sayac += 1;
+            }
+
+            do
+            {
+                if (sayac == 0) break;
+                 
+                sayac -= 1;
+
+            } while (true);
+
+            int toplam = default;
+
+            for (int i = default; i < 100; i++)
+            {
+                if (i % 10 != 0) continue;
+
+                toplam += i;
+                if (i == 50) break;
+            }
+
+            //GetName();
+
+            // Goto Kulllanımı
+
+
+            switch (10)
+            {
+                case 10:
+                    if (1 == 1)
+                        goto case 5;
+                    break;
+                case 5:
+                    Console.WriteLine("Goto yönlnedirdi.");
+                    break;
+                default:
+                    break;
+            }
+
 
             Console.ReadLine();
         }
 
+
+        static void GetName() {
+            long sayac = 1_000_000;
+            for (int i = 0; i < 100; i++)
+            {
+                switch (i)
+                {
+                    case 50:
+                        while (true)
+                        {
+                            sayac += 1000;
+                            if (sayac > 1_000_000);
+                        }
+                    default:
+                        break;
+                }
+            }
+        }
     }
  
 }

@@ -6,102 +6,73 @@ using System.Data.SqlClient;
 
 namespace CSharp
 {
+
+    class Person 
+    {
+        public int Id { get; set; }
+
+    }
     class Program
     {
         static void Main(string[] args)
         {
-            #region Manevratik Komutlar: Break, Continue, Return
             /*
-             * Break    Komutu: 2 yerde kullanılır. Switch Case ve Döngüler'de
-             * Continue Komutu: Sade ve sadece döngülerden erişilebilen ve döngülerde kullanılabilen bir keyworddur.    
-             *                  Döngüde bir sonraki tura geçmemizi sağlar.
-             * Return   Komutu: Her yerde(metot içerisinde) kullanılabilir, erişilebilir bir keyword dur.
-             *                  2 işlemi gerçekleştirir. Metottan çıkma ve değer döndürme.
-             * Goto     Komutu: Kodun senkranizasyonunu bozup, askisi ters istikamette almamızı sağlayan bir manevratik komuttur.
-             *                  switch case yapılanmasında dahili olarak kullanılan bu komut, metot içeriisinde heryerde kullanılabilir.
+             * *******************************************************************************************************************************************
+             * Tuple             : Tek bir syntax üzerinde birden fazla değişken tanımlamamızı sağlayan bir nesnedir.                                    *
+             *                     int x = 5;                                                                                                            *
+             *                     (bool a, char b, byte c, short d, int e, long f, float h, double j, decimal k)Z;   Tuple değişken Z :)                *
+             *                     (int a, string b)c = (5, "Ahmet")  sıralı olarak atama yapılır.                                                       *
+             *                     c.a --->  5,   c.b ---> Ahmet   erişim                                                                                *
+             *                                                                                                                                           *
+             *********************************************************************************************************************************************
+             *                                                                                                                                           *
+             * Değişkenler arası değer atanırken verisel açıdan iki davranış söz konusudur.   Deep Copy, Shallow Copy                                    *
+             * Deep Copy         : Derin kopyalama neticesinde eldeki veri çoğalır/klonlanır.                                                            *
+             *                     int a = 5;   b = a;                                                                                                   *
+             *                     Değer türlü değişkenler birbirine atanırken default olarak deep copy geçerlidir. Yani veri otomatik olarak türetilir. *
+             *                     (bool, char, byte,short,int,long,float,double,decimal)                                                                *
+             *                                                                                                                                           *
+             * *******************************************************************************************************************************************
+             * Shallow Copy     : Değişkenler arası değer atamalarında değeri türetmek/çoğaltmak/klonlamak yerine var olanı birden fazla referansla işaretlemeye
+             *                    dayalı kopyalama yöntemidir.
+             *                    Bellekte birden fazla referansın tek bir veriyi işaret etmesidir.
+             *                    Neticede ilgili değer bir değişikliğe uğradığında tüm işaretleyen referanslara bu değişiklik yansıyacaktır.
+             * 
+             * 
              */
-            #endregion
-            int a = 0;
 
-            switch (10)
-            {
-                case 2:
-                    Console.WriteLine("2");
-                    break;
-                case 10:
-                    Console.WriteLine("10 değeri mevcut.");
+            int age = default;
+            string name = default;
+            char gender = default;
+            string job = default;
 
-                    break;
-                default:
-                    Console.WriteLine("Default");
-                    break;
-            }
+            (int age, string name, char gender, string job) kisi = (age,name,gender,job);
+            kisi.name = "";
+            
+            Tuple<int, string, char, string> person = new Tuple<int, string, char, string>(age, name, gender, job);
+            person = (14, "Test",'E', "C").ToTuple<int,string,char,string>();
 
-            int sayac = 0;
-            while (true)
-            {
-                if (sayac == 100) break;
-                sayac += 1;
-            }
+            Person person1 = new Person { Id = 1 };
 
-            do
-            {
-                if (sayac == 0) break;
-                 
-                sayac -= 1;
+            Person person2 = person1;
+            person2.Id = 2;
 
-            } while (true);
+            Console.WriteLine(person1.Id);
 
-            int toplam = default;
-
-            for (int i = default; i < 100; i++)
-            {
-                if (i % 10 != 0) continue;
-
-                toplam += i;
-                if (i == 50) break;
-            }
-
-            //GetName();
-
-            // Goto Kulllanımı
-
-
-            switch (10)
-            {
-                case 10:
-                    if (1 == 1)
-                        goto case 5;
-                    break;
-                case 5:
-                    Console.WriteLine("Goto yönlnedirdi.");
-                    break;
-                default:
-                    break;
-            }
-
-
+            GetJob(person);
             Console.ReadLine();
         }
 
+        public static string GetJob(Tuple<int,string,char,string> tuple) {
 
-        static void GetName() {
-            long sayac = 1_000_000;
-            for (int i = 0; i < 100; i++)
+            if(tuple.Item1 > 10)
             {
-                switch (i)
-                {
-                    case 50:
-                        while (true)
-                        {
-                            sayac += 1000;
-                            if (sayac > 1_000_000);
-                        }
-                    default:
-                        break;
-                }
+                return "Deneme";
+                 
             }
+            return "Engineer";
         }
+
     }
  
 }

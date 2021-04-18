@@ -6,73 +6,62 @@ using System.Data.SqlClient;
 
 namespace CSharp
 {
-
-    class Person 
-    {
-        public int Id { get; set; }
-
-    }
     class Program
     {
         static void Main(string[] args)
         {
+            #region Implicit Type Conversion, Explicit Type Conversion , checked, unchecked
             /*
-             * *******************************************************************************************************************************************
-             * Tuple             : Tek bir syntax üzerinde birden fazla değişken tanımlamamızı sağlayan bir nesnedir.                                    *
-             *                     int x = 5;                                                                                                            *
-             *                     (bool a, char b, byte c, short d, int e, long f, float h, double j, decimal k)Z;   Tuple değişken Z :)                *
-             *                     (int a, string b)c = (5, "Ahmet")  sıralı olarak atama yapılır.                                                       *
-             *                     c.a --->  5,   c.b ---> Ahmet   erişim                                                                                *
-             *                                                                                                                                           *
-             *********************************************************************************************************************************************
-             *                                                                                                                                           *
-             * Değişkenler arası değer atanırken verisel açıdan iki davranış söz konusudur.   Deep Copy, Shallow Copy                                    *
-             * Deep Copy         : Derin kopyalama neticesinde eldeki veri çoğalır/klonlanır.                                                            *
-             *                     int a = 5;   b = a;                                                                                                   *
-             *                     Değer türlü değişkenler birbirine atanırken default olarak deep copy geçerlidir. Yani veri otomatik olarak türetilir. *
-             *                     (bool, char, byte,short,int,long,float,double,decimal)                                                                *
-             *                                                                                                                                           *
-             * *******************************************************************************************************************************************
-             * Shallow Copy     : Değişkenler arası değer atamalarında değeri türetmek/çoğaltmak/klonlamak yerine var olanı birden fazla referansla işaretlemeye
-             *                    dayalı kopyalama yöntemidir.
-             *                    Bellekte birden fazla referansın tek bir veriyi işaret etmesidir.
-             *                    Neticede ilgili değer bir değişikliğe uğradığında tüm işaretleyen referanslara bu değişiklik yansıyacaktır.
-             * 
-             * 
+             * Metinsel ifadeleri diğer ifadelere dönüştürmek için 2 yöntem kullanılır. Parse, Convert
+             * Tür dönüşümlerinde amaç turu donusturmektir. Yani elimizdeki veriye uygun bir türe geçiş yapmaktır.
+             * Diğer ifadeleri metinsel ifadelere dönüştürmede : Convert ve ToString()  kullanılabilir.
+             * Sayısal türler kendi aralarında tür dönüşümü gerçekleştiriken max değerlerine dikkat etmek lazım. implicit, explicit olayları devreye girecektir.
+             * int a = 65999;   byte b = a; yaparsak arka tarafta  a % 256 işlemine tabi olacak ve b == 207 olacaktr. değer kaybı oldu.
+             * Implicit Type Conversion, Explicit Type Conversion , 
+             * Normal bir kod bloğu unchecked dir.
+             * 2 Özel tür dönüşümü vardır : bool -> Sayısal ,   char -> sayısal (ASCII)
              */
+            #endregion
 
-            int age = default;
-            string name = default;
-            char gender = default;
-            string job = default;
+            string degisken = "123";
+            int parseInt = int.Parse(degisken);
+            parseInt = Convert.ToInt32(degisken);
 
-            (int age, string name, char gender, string job) kisi = (age,name,gender,job);
-            kisi.name = "";
-            
-            Tuple<int, string, char, string> person = new Tuple<int, string, char, string>(age, name, gender, job);
-            person = (14, "Test",'E', "C").ToTuple<int,string,char,string>();
+            byte a = default;
+            int b = 65999;
+            short c = 32767;
 
-            Person person1 = new Person { Id = 1 };
+            a = (byte)b;
+            c = (short)b;
 
-            Person person2 = person1;
-            person2.Id = 2;
+            string e = c.ToString();
 
-            Console.WriteLine(person1.Id);
 
-            GetJob(person);
+            int a1 = 3000;
+            short b1 = (byte)a1;  // (byte)a1 : Explicit Type Conversion (Bilinçli Tür Dönüşümü (Açık)),  short b1 = (byte)a1 : Explicit Type Conversion (Bilinçsiz Tür Dönüşümü(Kapalı))
+
+
+            unchecked   // kullanmazsakta olur çünkü default olarak c# da kod blokları unchecked dir.
+            {
+                int a2 = 3000;
+                short b2 = (byte)a2;
+            }
+
+            checked   // System.OverflowException: 'Arithmetic operation resulted in an overflow.'   Değer kaybı olduğunda hata  verir.
+            {
+                int a2 = 3000;
+                short b2 = (byte)a2;
+            }
+
+
+            bool a4 = true;
+            int b4 = Convert.ToInt32(a4);
+
+            Console.WriteLine(a);
+
             Console.ReadLine();
         }
-
-        public static string GetJob(Tuple<int,string,char,string> tuple) {
-
-            if(tuple.Item1 > 10)
-            {
-                return "Deneme";
-                 
-            }
-            return "Engineer";
-        }
-
+         
     }
  
 }
